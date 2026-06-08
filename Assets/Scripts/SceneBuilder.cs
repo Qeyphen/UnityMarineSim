@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Cinemachine;
 using System.IO;
 using System.Collections.Generic;
 
@@ -31,11 +32,14 @@ public class SceneConfig
 public class SceneBuilder : MonoBehaviour
 {
     [Header("Config")]
-    public string configFileName = "scene.json";
+    public string configFileName = "Scene.json";
 
     [Header("Prefabs")]
     public GameObject boatPrefab;
     public GameObject buoyPrefab;
+
+    [Header("Camera")]
+    public CinemachineCamera followCamera;
 
     private SceneConfig                    config;
     private Dictionary<string, GameObject> spawnedObjects
@@ -52,10 +56,7 @@ public class SceneBuilder : MonoBehaviour
     {
         string[] searchPaths = {
             Path.GetFullPath(Path.Combine(
-                Application.dataPath, "..", "..", "config", configFileName)),
-            Path.GetFullPath(Path.Combine(
                 Application.dataPath, "..", "config", configFileName)),
-            Path.Combine(Application.dataPath, "Config", configFileName),
         };
 
         string json      = null;
@@ -107,6 +108,13 @@ public class SceneBuilder : MonoBehaviour
 
             GameObject spawned = Instantiate(prefab, pos, rot);
             spawned.name       = obj.id;
+
+            if (obj.type.ToLower() == "boat" && followCamera != null)
+            {
+                // Cinemachine 3: the unified "Tracking Target" is the Follow target.
+                followCamera.Follow = spawned.transform;
+                Debug.Log($"[SceneLoader] Camera now tracking {obj.id}");
+            }
 
             if (obj.dynamic)
             {
