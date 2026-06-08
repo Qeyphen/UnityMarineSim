@@ -44,6 +44,9 @@ public class SceneBuilder : MonoBehaviour
     private SceneConfig                    config;
     private Dictionary<string, GameObject> spawnedObjects
         = new Dictionary<string, GameObject>();
+    // Keep controllers referenced so their ROS subscriptions stay alive.
+    private List<AutonomousBoatController> controllers
+        = new List<AutonomousBoatController>();
 
     void Start()
     {
@@ -118,8 +121,10 @@ public class SceneBuilder : MonoBehaviour
 
             if (obj.dynamic)
             {
+                string targetTopic = $"/{obj.id}/target_pose";
+                controllers.Add(new AutonomousBoatController(targetTopic));
                 Debug.Log($"[SceneLoader] DYNAMIC: {obj.id} ({obj.type})" +
-                          $" at {pos} | topic: {obj.ros2_topic}");
+                          $" at {pos} | target topic: {targetTopic}");
             }
             else
             {
