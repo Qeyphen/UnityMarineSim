@@ -44,8 +44,17 @@ public class SceneBuilder : MonoBehaviour
     [Header("Camera")]
     public CinemachineCamera followCamera;
 
+    [Header("Map")]
+    public OccupancyGridPublisher   gridPublisher;
+    public DynamicObstaclePublisher dynamicPublisher;
+
     private SceneConfig                    config;
     private Dictionary<string, GameObject> spawnedObjects
+        = new Dictionary<string, GameObject>();
+    // Non-dynamic spawned objects (buoys) — fed to the occupancy grid as obstacles.
+    private List<GameObject>               staticObstacles = new List<GameObject>();
+    // Dynamic spawned objects (boats) — fed to the dynamic obstacle publisher.
+    private Dictionary<string, GameObject> dynamicAgents
         = new Dictionary<string, GameObject>();
 
     void Start()
@@ -122,11 +131,13 @@ public class SceneBuilder : MonoBehaviour
             if (obj.dynamic)
             {
                 ActivateController(spawned, obj);
+                dynamicAgents[obj.id] = spawned;
             }
             else
             {
                 Rigidbody rb = spawned.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = true;
+                staticObstacles.Add(spawned);
                 Debug.Log($"[SceneLoader] STATIC: {obj.id} ({obj.type}) at {pos}");
             }
 
@@ -134,6 +145,14 @@ public class SceneBuilder : MonoBehaviour
         }
 
         Debug.Log($"[SceneLoader] Done — {spawnedObjects.Count} objects spawned.");
+
+        // Hand the static obstacles to the occupancy grid publisher (if present).
+        if (gridPublisher == null) gridPublisher = FindAnyObjectByType<OccupancyGridPublisher>();
+        if (gridPublisher != null) gridPublisher.Publish(staticObstacles);
+
+        // Hand the dynamic agents to the dynamic obstacle publisher (if present).
+        if (dynamicPublisher == null) dynamicPublisher = FindAnyObjectByType<DynamicObstaclePublisher>();
+        if (dynamicPublisher != null) dynamicPublisher.SetAgents(dynamicAgents);
     }
 
     // Seeds the boat's control mode from config. The BoatControlSwitcher then
