@@ -40,6 +40,7 @@ public class ManualBoatController : MonoBehaviour
             );
 
         Vector3 fwd = Vector3.Scale(new Vector3(1f, 0f, 1f), transform.forward);
+        if (fwd.sqrMagnitude > 0f) fwd.Normalize();
 
         if (forward)
             ApplyForceToReachVelocity(fwd * maxSpeed);
@@ -62,9 +63,9 @@ public class ManualBoatController : MonoBehaviour
                 exhaustParticles.Pause();
         }
 
-        bool    movingForward = Vector3.Cross(
+        bool    movingForward = Vector3.Dot(
                                     transform.forward,
-                                    rb.linearVelocity).y < 0;
+                                    rb.linearVelocity) > 0f;
         Vector3 targetDir     = movingForward
                                 ? transform.forward
                                 : -transform.forward;
