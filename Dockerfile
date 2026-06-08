@@ -31,4 +31,9 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
 RUN sed -i 's/else self.parse_message_name(node.msg)/else (self.parse_message_name(node.msg) if (node is not None and node.msg is not None) else "")/g' \
     /root/ros2_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/tcp_sender.py
 
+# The endpoint accepts `latch` but ignores it ("# TODO: surface latch functionality"),
+# so latched publishers (e.g. /map) come out VOLATILE and late subscribers miss them.
+# Make latch=True create a TRANSIENT_LOCAL publisher.
+RUN python3 -c "p='/root/ros2_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/publisher.py'; s=open(p).read(); old='        self.pub = self.create_publisher(message_class, topic, queue_size)'; new='        if latch:\n            from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy\n            qos = QoSProfile(depth=queue_size, history=QoSHistoryPolicy.KEEP_LAST, durability=QoSDurabilityPolicy.TRANSIENT_LOCAL)\n            self.pub = self.create_publisher(message_class, topic, qos)\n        else:\n            self.pub = self.create_publisher(message_class, topic, queue_size)'; open(p,'w').write(s if 'TRANSIENT_LOCAL' in s else s.replace(old,new,1))"
+
 WORKDIR /root/ros2_ws

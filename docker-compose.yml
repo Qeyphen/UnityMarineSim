@@ -31,3 +31,27 @@ services:
         ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_TCP_PORT:=10000
       "
     restart: unless-stopped
+
+  # Opt-in GUI: `docker compose --profile gui up rviz`. Needs XQuartz on the host.
+  rviz:
+    image: osrf/ros:humble-desktop-full
+    container_name: n3mo_rviz
+    profiles: ["gui"]
+    depends_on:
+      - ros_bridge
+    networks:
+      - ros_net
+    volumes:
+      - ./config:/config
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=<CycloneDDS><Domain><General><NetworkInterfaceAddress>eth0</NetworkInterfaceAddress></General></Domain></CycloneDDS>
+      - DISPLAY=host.docker.internal:0
+    command: >
+      bash -c "
+        apt-get update >/dev/null && apt-get install -y ros-humble-rmw-cyclonedds-cpp >/dev/null &&
+        source /opt/ros/humble/setup.bash &&
+        ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map base_link &
+        rviz2 -d /config/n3mo.rviz
+      "
