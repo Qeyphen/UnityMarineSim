@@ -119,56 +119,216 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &55305815
-GameObject:
+--- !u!21 &100005295
+Material:
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 55305816}
-  - component: {fileID: 55305817}
-  m_Layer: 0
-  m_Name: Floater (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &55305816
-Transform:
+  m_Name: Shader Graphs_Shore Foam Atlas
+  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _MATERIAL_AFFECTS_ALBEDO
+  - _MATERIAL_AFFECTS_MASKMAP
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Base_Color:
+        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal_Map:
+        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Opacity_Map:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
+        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_1:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_2:
+        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterMask:
+        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AffectAlbedo: 1
+    - _AffectMetal: 0
+    - _AffectNormal: 0
+    - _AffectSmoothness: 1
+    - _ContrastNormalized: 0.9605384
+    - _DecalColorMask0: 15
+    - _DecalColorMask1: 0
+    - _DecalColorMask2: 3
+    - _DecalColorMask3: 0
+    - _DecalMeshBiasType: 0
+    - _DecalMeshDepthBias: 0
+    - _DecalMeshViewBias: 0
+    - _DecalStencilRef: 16
+    - _DecalStencilWriteMask: 16
+    - _DrawOrder: 0
+    - _FoamSmoothness: 0.3
+    - _NormalizedAliveTime: 0.9900353
+    - _Opacity: 0
+    - _OpticalFlowMultiplier: 0
+    - _Speed: 1
+    - _WaterSmoothness: 0.9
+    m_Colors:
+    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
+    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!21 &111642199
+Material:
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 55305815}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.19, y: 1.95, z: -0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 698063861}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &55305817
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 55305815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c22e9797e0e4ea7b125761c715b7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterFloater
-  depthBefSub: 1
-  displacementAmt: 3
-  floaters: 4
-  waterDrag: 0.99
-  waterAngularDrag: 0.5
-  water: {fileID: 0}
+  m_Name: Shader Graphs_Shore Foam Atlas
+  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _MATERIAL_AFFECTS_ALBEDO
+  - _MATERIAL_AFFECTS_MASKMAP
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Base_Color:
+        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal_Map:
+        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Opacity_Map:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
+        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_1:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_2:
+        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterMask:
+        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AffectAlbedo: 1
+    - _AffectMetal: 0
+    - _AffectNormal: 0
+    - _AffectSmoothness: 1
+    - _ContrastNormalized: 0.9952442
+    - _DecalColorMask0: 15
+    - _DecalColorMask1: 0
+    - _DecalColorMask2: 3
+    - _DecalColorMask3: 0
+    - _DecalMeshBiasType: 0
+    - _DecalMeshDepthBias: 0
+    - _DecalMeshViewBias: 0
+    - _DecalStencilRef: 16
+    - _DecalStencilWriteMask: 16
+    - _DrawOrder: 0
+    - _FoamSmoothness: 0.3
+    - _NormalizedAliveTime: 0.99880964
+    - _Opacity: 0
+    - _OpticalFlowMultiplier: 0
+    - _Speed: 1
+    - _WaterSmoothness: 0.9
+    m_Colors:
+    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
+    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &126125901
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,6 +392,111 @@ MonoBehaviour:
   gameobjectSamplesName: {fileID: 0}
   gameobjectSamplesDescription: {fileID: 0}
   gameViewCamera: {fileID: 0}
+--- !u!21 &186655612
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_Shore Foam Atlas
+  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _MATERIAL_AFFECTS_ALBEDO
+  - _MATERIAL_AFFECTS_MASKMAP
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Base_Color:
+        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal_Map:
+        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Opacity_Map:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
+        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_1:
+        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D_2:
+        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterMask:
+        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AffectAlbedo: 1
+    - _AffectMetal: 0
+    - _AffectNormal: 0
+    - _AffectSmoothness: 1
+    - _ContrastNormalized: 0.5628949
+    - _DecalColorMask0: 15
+    - _DecalColorMask1: 0
+    - _DecalColorMask2: 3
+    - _DecalColorMask3: 0
+    - _DecalMeshBiasType: 0
+    - _DecalMeshDepthBias: 0
+    - _DecalMeshViewBias: 0
+    - _DecalStencilRef: 16
+    - _DecalStencilWriteMask: 16
+    - _DrawOrder: 0
+    - _FoamSmoothness: 0.3
+    - _NormalizedAliveTime: 0.8751316
+    - _Opacity: 1
+    - _OpticalFlowMultiplier: 0
+    - _Speed: 1
+    - _WaterSmoothness: 0.9
+    m_Colors:
+    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
+    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &199395034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,11 +1329,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!4 &698063861 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7044053317539647894, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-  m_PrefabInstance: {fileID: 1937088783}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &720609189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,56 +1473,6 @@ Transform:
   - {fileID: 604292748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &728189085
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 728189086}
-  - component: {fileID: 728189087}
-  m_Layer: 0
-  m_Name: Floater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &728189086
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728189085}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.19, y: 1.195, z: 5.62}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 698063861}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &728189087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728189085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c22e9797e0e4ea7b125761c715b7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterFloater
-  depthBefSub: 1
-  displacementAmt: 3
-  floaters: 4
-  waterDrag: 0.99
-  waterAngularDrag: 0.5
-  water: {fileID: 0}
 --- !u!1 &739643066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1493,6 +1703,7 @@ MonoBehaviour:
   configFileName: Scene.json
   boatPrefab: {fileID: 5545572785409679156, guid: 4c0d798057879474e97e5f7d204c8932, type: 3}
   buoyPrefab: {fileID: 4734132394604540621, guid: 8cb0b14025b9342b39d04e7ace45ea0f, type: 3}
+  followCamera: {fileID: 597470283}
 --- !u!21 &789166984
 Material:
   serializedVersion: 8
@@ -1559,59 +1770,6 @@ Material:
     - _Wave_Blend: {r: 0.35799217, g: 0.59577566, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!1 &834201632 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4075008853071821720, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-  m_PrefabInstance: {fileID: 1937088783}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &834201633
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834201632}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &834201634
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834201632}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.6602857, y: 2.4475703, z: 6.1151786}
-  m_Center: {x: 0.14279842, y: 0.0320701, z: 2.5575895}
 --- !u!1 &838711648
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,6 +2010,60 @@ MonoBehaviour:
   m_ObsoleteUseShadowQualitySettings: 0
   m_ObsoleteCustomShadowResolution: 512
   m_ObsoleteContactShadows: 0
+--- !u!1 &841268273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 841268275}
+  - component: {fileID: 841268274}
+  m_Layer: 0
+  m_Name: ROSConnection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &841268274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841268273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7acef0b79454c9b4dae3f8139bc4ba77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Robotics.ROSTCPConnector::Unity.Robotics.ROSTCPConnector.ROSConnection
+  m_RosIPAddress: 127.0.0.1
+  m_RosPort: 10000
+  m_ConnectOnStart: 1
+  m_KeepaliveTime: 60
+  m_NetworkTimeoutSeconds: 2
+  m_SleepTimeSeconds: 0.01
+  m_ShowHUD: 1
+  m_TFTopics:
+  - /tf
+  listenForTFMessages: 1
+--- !u!4 &841268275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841268273}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 26.44, y: -3.0508, z: -36.26731}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &965748019
 GameObject:
   m_ObjectHideFlags: 0
@@ -2216,111 +2428,6 @@ Transform:
   - {fileID: 838711650}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1231660270
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Shore Foam Atlas
-  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _MATERIAL_AFFECTS_ALBEDO
-  - _MATERIAL_AFFECTS_MASKMAP
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _Base_Color:
-        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Normal_Map:
-        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Opacity_Map:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
-        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_1:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_2:
-        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _WaterMask:
-        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AffectAlbedo: 1
-    - _AffectMetal: 0
-    - _AffectNormal: 0
-    - _AffectSmoothness: 1
-    - _ContrastNormalized: 0.9656337
-    - _DecalColorMask0: 15
-    - _DecalColorMask1: 0
-    - _DecalColorMask2: 3
-    - _DecalColorMask3: 0
-    - _DecalMeshBiasType: 0
-    - _DecalMeshDepthBias: 0
-    - _DecalMeshViewBias: 0
-    - _DecalStencilRef: 16
-    - _DecalStencilWriteMask: 16
-    - _DrawOrder: 0
-    - _FoamSmoothness: 0.3
-    - _NormalizedAliveTime: 0.9913333
-    - _Opacity: 0
-    - _OpticalFlowMultiplier: 0
-    - _Speed: 1
-    - _WaterSmoothness: 0.9
-    m_Colors:
-    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
-    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!21 &1231905356
 Material:
   serializedVersion: 8
@@ -2385,111 +2492,6 @@ Material:
     - _Breaking_Range: {r: 0.6314906, g: 0.9402182, b: 0, a: 0}
     - _Deep_Foam_Range: {r: 0.09467062, g: 0.80836046, b: 0, a: 0}
     - _Wave_Blend: {r: 0.4876081, g: 0.5454477, b: 0, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1413522131
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Shore Foam Atlas
-  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _MATERIAL_AFFECTS_ALBEDO
-  - _MATERIAL_AFFECTS_MASKMAP
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _Base_Color:
-        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Normal_Map:
-        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Opacity_Map:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
-        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_1:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_2:
-        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _WaterMask:
-        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AffectAlbedo: 1
-    - _AffectMetal: 0
-    - _AffectNormal: 0
-    - _AffectSmoothness: 1
-    - _ContrastNormalized: 0
-    - _DecalColorMask0: 15
-    - _DecalColorMask1: 0
-    - _DecalColorMask2: 3
-    - _DecalColorMask3: 0
-    - _DecalMeshBiasType: 0
-    - _DecalMeshDepthBias: 0
-    - _DecalMeshViewBias: 0
-    - _DecalStencilRef: 16
-    - _DecalStencilWriteMask: 16
-    - _DrawOrder: 0
-    - _FoamSmoothness: 0.3
-    - _NormalizedAliveTime: 0.3681705
-    - _Opacity: 0
-    - _OpticalFlowMultiplier: 0
-    - _Speed: 1
-    - _WaterSmoothness: 0.9
-    m_Colors:
-    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
-    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!1 &1415036732
@@ -2629,161 +2631,6 @@ Material:
     - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!21 &1527264955
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Shore Foam Atlas
-  m_Shader: {fileID: -6465566751694194690, guid: 1bccdb6a8192a174ea4732e842b70bb2, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _MATERIAL_AFFECTS_ALBEDO
-  - _MATERIAL_AFFECTS_MASKMAP
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _Base_Color:
-        m_Texture: {fileID: 2800000, guid: 96c942462f00f654ca6ac773eb41839d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Normal_Map:
-        m_Texture: {fileID: 2800000, guid: b1ca54a0856b9df41a1f264f663698ae, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Opacity_Map:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_0759673bde1c44eaa30dcacafda155f8_Texture_1:
-        m_Texture: {fileID: 2800000, guid: cca0ab1b12575b64f9f848f863aa495b, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a7f3a3b273bd4452a47a71f259e31a2f_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 3daf94270f45b514589e3f67f61b73c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 7c0dc5f55bc3fd648b29c854019b4a44, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_1:
-        m_Texture: {fileID: 2800000, guid: 56256dcaf45b73c42bfcc2f9ed5c14b8, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2D_2:
-        m_Texture: {fileID: 2800000, guid: 5a8cce756186328428c64499ba7ab5f7, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _WaterMask:
-        m_Texture: {fileID: 2800000, guid: 08c152dce78961a41b88f45ed249a789, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AffectAlbedo: 1
-    - _AffectMetal: 0
-    - _AffectNormal: 0
-    - _AffectSmoothness: 1
-    - _ContrastNormalized: 0.5338858
-    - _DecalColorMask0: 15
-    - _DecalColorMask1: 0
-    - _DecalColorMask2: 3
-    - _DecalColorMask3: 0
-    - _DecalMeshBiasType: 0
-    - _DecalMeshDepthBias: 0
-    - _DecalMeshViewBias: 0
-    - _DecalStencilRef: 16
-    - _DecalStencilWriteMask: 16
-    - _DrawOrder: 0
-    - _FoamSmoothness: 0.3
-    - _NormalizedAliveTime: 0.86533743
-    - _Opacity: 1
-    - _OpticalFlowMultiplier: 0
-    - _Speed: 1
-    - _WaterSmoothness: 0.9
-    m_Colors:
-    - _Color: {r: 1, g: 0.9877524, b: 0.8836478, a: 1}
-    - _FlipbookSize: {r: 8, g: 8, b: 0, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!1 &1575502568
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1575502569}
-  - component: {fileID: 1575502570}
-  m_Layer: 0
-  m_Name: Floater (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1575502569
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1575502568}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.47, y: -1.195, z: 5.62}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 698063861}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1575502570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1575502568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c22e9797e0e4ea7b125761c715b7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterFloater
-  depthBefSub: 1
-  displacementAmt: 3
-  floaters: 4
-  waterDrag: 0.99
-  waterAngularDrag: 0.5
-  water: {fileID: 0}
 --- !u!21 &1614079740
 Material:
   serializedVersion: 8
@@ -3297,81 +3144,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1937088783
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.00000005338508
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.00000005338508
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2075487066987238127, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4075008853071821720, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      propertyPath: m_Name
-      value: Buoy
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7044053317539647894, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 728189086}
-    - targetCorrespondingSourceObject: {fileID: 7044053317539647894, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1575502569}
-    - targetCorrespondingSourceObject: {fileID: 7044053317539647894, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 55305816}
-    - targetCorrespondingSourceObject: {fileID: 7044053317539647894, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2088751166}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4075008853071821720, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 834201634}
-    - targetCorrespondingSourceObject: {fileID: 4075008853071821720, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 834201633}
-  m_SourcePrefab: {fileID: 100100000, guid: aa4c4d813a67ef0489d8a5210d47f42e, type: 3}
 --- !u!1 &1952042779
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,56 +3322,6 @@ Transform:
   - {fileID: 468807401}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2088751165
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2088751166}
-  - component: {fileID: 2088751167}
-  m_Layer: 0
-  m_Name: Floater (3)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2088751166
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2088751165}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.47, y: -1.195, z: -0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 698063861}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2088751167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2088751165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c22e9797e0e4ea7b125761c715b7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterFloater
-  depthBefSub: 1
-  displacementAmt: 3
-  floaters: 4
-  waterDrag: 0.99
-  waterAngularDrag: 0.5
-  water: {fileID: 0}
 --- !u!1001 &4860203397915419412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3630,7 +3352,7 @@ PrefabInstance:
       objectReference: {fileID: 1146493789}
     - target: {fileID: 3099328370189163287, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.27493048
+      value: 0.3156929
       objectReference: {fileID: 0}
     - target: {fileID: 3606410978876658590, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: material
@@ -3710,7 +3432,7 @@ PrefabInstance:
       objectReference: {fileID: 1146493789}
     - target: {fileID: 6319145467388717420, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.2834139
+      value: 0.03804636
       objectReference: {fileID: 0}
     - target: {fileID: 6514666487567467171, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: material
@@ -3730,7 +3452,7 @@ PrefabInstance:
       objectReference: {fileID: 1146493789}
     - target: {fileID: 6970427768716510598, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.7289138
+      value: 3.496841
       objectReference: {fileID: 0}
     - target: {fileID: 7386530092662834918, guid: e46110eeda2666a4c8f3de3cfca49219, type: 3}
       propertyPath: m_IsActive
@@ -3755,4 +3477,4 @@ SceneRoots:
   - {fileID: 720609194}
   - {fileID: 597470284}
   - {fileID: 751925409}
-  - {fileID: 1937088783}
+  - {fileID: 841268275}
