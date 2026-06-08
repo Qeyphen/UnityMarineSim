@@ -931,13 +931,13 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
-  activeInputHandler: 1
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: f40d1250-fdc9-4408-954d-2b76bd2db57c
+  cloudProjectId: ac4fbc79-ccfa-4de7-9c1b-683f425b9ad1
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: N3moSim 2026-06-07_13-02-23
-  organizationId: kifenraph
+  projectName: N3moSim (1)
+  organizationId: unity_f6e6dffaf88861d52f62
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
