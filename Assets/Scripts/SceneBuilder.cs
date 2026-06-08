@@ -11,6 +11,8 @@ public class EnvironmentConfig
     public string time_of_day;
 }
 
+public enum ControlMode { Manual, Auto }
+
 [System.Serializable]
 public class ObjectConfig
 {
@@ -18,6 +20,7 @@ public class ObjectConfig
     public string  type;
     public bool    dynamic;
     public string  ros2_topic;
+    public string  control_mode;   // "manual" | "auto" (dynamic objects only)
     public float[] position;
     public float[] rotation;
 }
@@ -44,9 +47,6 @@ public class SceneBuilder : MonoBehaviour
     private SceneConfig                    config;
     private Dictionary<string, GameObject> spawnedObjects
         = new Dictionary<string, GameObject>();
-    // Keep controllers referenced so their ROS subscriptions stay alive.
-    private List<AutonomousBoatController> controllers
-        = new List<AutonomousBoatController>();
 
     void Start()
     {
@@ -121,10 +121,7 @@ public class SceneBuilder : MonoBehaviour
 
             if (obj.dynamic)
             {
-                string targetTopic = $"/{obj.id}/target_pose";
-                controllers.Add(new AutonomousBoatController(targetTopic));
-                Debug.Log($"[SceneLoader] DYNAMIC: {obj.id} ({obj.type})" +
-                          $" at {pos} | target topic: {targetTopic}");
+                ActivateController(spawned, obj);
             }
             else
             {
@@ -137,6 +134,26 @@ public class SceneBuilder : MonoBehaviour
         }
 
         Debug.Log($"[SceneLoader] Done — {spawnedObjects.Count} objects spawned.");
+    }
+
+    // Seeds the boat's control mode from config. The BoatControlSwitcher then
+    // owns activation and lets you change the mode live in the Inspector.
+    void ActivateController(GameObject spawned, ObjectConfig obj)
+    {
+        ControlMode mode = ControlMode.Manual;
+        if (!string.IsNullOrEmpty(obj.control_mode) &&
+            !System.Enum.TryParse(obj.control_mode, true, out mode))
+        {
+            Debug.LogWarning($"[SceneLoader] Unknown control_mode " +
+                             $"'{obj.control_mode}' for {obj.id} — defaulting to Manual.");
+            mode = ControlMode.Manual;
+        }
+
+        BoatControlSwitcher switcher = spawned.GetComponent<BoatControlSwitcher>();
+        if (switcher == null) switcher = spawned.AddComponent<BoatControlSwitcher>();
+        switcher.Configure(mode, $"/{obj.id}/target_pose");
+
+        Debug.Log($"[SceneLoader] {obj.id}: control_mode seeded to {mode}");
     }
 
     GameObject GetPrefab(string type)

@@ -1,10 +1,8 @@
 FROM ros:humble
 
 RUN apt-get update && apt-get install -y \
-    python3-pip \
     python3-colcon-common-extensions \
     git \
-    curl \
     ros-humble-rmw-cyclonedds-cpp \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,7 +28,7 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
     echo "export AMENT_PREFIX_PATH=/root/ros2_ws/install/n3mo_control:/root/ros2_ws/install/ros_tcp_endpoint:\$AMENT_PREFIX_PATH" >> /root/.bashrc && \
     echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /root/.bashrc
 
-RUN sed -i 's/else self.parse_message_name(node.msg)/else (self.parse_message_name(node.msg) if node.msg is not None else "")/g' \
+RUN sed -i 's/else self.parse_message_name(node.msg)/else (self.parse_message_name(node.msg) if (node is not None and node.msg is not None) else "")/g' \
     /root/ros2_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/tcp_sender.py
 
 WORKDIR /root/ros2_ws

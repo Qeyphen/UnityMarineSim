@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   ros_net:
     driver: bridge
@@ -31,26 +29,5 @@ services:
         source /root/ros2_ws/install/setup.bash &&
         echo 'Starting ROS TCP Bridge on 0.0.0.0:10000...' &&
         ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_TCP_PORT:=10000
-      "
-    restart: unless-stopped
-
-  target_publisher:
-    image: n3mo_control:latest
-    container_name: n3mo_target_publisher
-    depends_on:
-      - ros_bridge
-    networks:
-      - ros_net
-    volumes:
-      - ./ros2_ws/src/n3mo_control:/root/ros2_ws/src/n3mo_control
-    environment:
-      - ROS_DOMAIN_ID=0
-      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - CYCLONEDDS_URI=<CycloneDDS><Domain><General><NetworkInterfaceAddress>eth0</NetworkInterfaceAddress></General></Domain></CycloneDDS>
-    command: >
-      bash -c "
-        source /opt/ros/humble/setup.bash &&
-        source /root/ros2_ws/install/setup.bash &&
-        ros2 launch n3mo_control target_pose.launch.py
       "
     restart: unless-stopped

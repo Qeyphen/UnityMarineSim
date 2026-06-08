@@ -10,6 +10,7 @@
       "type": "Boat",
       "dynamic": true,
       "ros2_topic": "/agent_01/cmd_vel",
+      "control_mode": "manual",
       "position": [0, 1, -300],
       "rotation": [0, 0, 0]
     },
