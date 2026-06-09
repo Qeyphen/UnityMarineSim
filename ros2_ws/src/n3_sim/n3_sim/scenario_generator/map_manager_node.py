@@ -45,6 +45,9 @@ class LocalMapManagerNode(Node):
         self.declare_parameter("publish_empty_costmap", False)
         self.declare_parameter("empty_costmap_size_m", 1000.0)
         self.declare_parameter("empty_costmap_resolution_m", 5.0)
+        # ENU center of the empty navigable square (e.g. put it on the ego boat / open water).
+        self.declare_parameter("empty_costmap_center_x_m", 0.0)
+        self.declare_parameter("empty_costmap_center_y_m", 0.0)
 
         # we use a stamped to have a date of origin set
         self.origin: ros.GeoPointStamped | None = None
@@ -92,6 +95,8 @@ class LocalMapManagerNode(Node):
     def _publish_empty_costmap(self) -> None:
         size_m = float(self.get_parameter("empty_costmap_size_m").value)
         resolution = float(self.get_parameter("empty_costmap_resolution_m").value)
+        center_x = float(self.get_parameter("empty_costmap_center_x_m").value)
+        center_y = float(self.get_parameter("empty_costmap_center_y_m").value)
         cells = max(1, int(round(size_m / resolution)))
         stamp = self.get_clock().now().to_msg()
         msg = ros.OccupancyGrid(
@@ -102,8 +107,8 @@ class LocalMapManagerNode(Node):
                 height=cells,
                 origin=ros.Pose(
                     position=ros.Point(
-                        x=-cells * resolution / 2.0,
-                        y=-cells * resolution / 2.0,
+                        x=center_x - cells * resolution / 2.0,
+                        y=center_y - cells * resolution / 2.0,
                         z=0.0,
                     ),
                     orientation=ros.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0),
@@ -114,7 +119,8 @@ class LocalMapManagerNode(Node):
         self.costmap_pub.publish(msg)
         self.get_logger().info(
             f"Empty costmap published on {COSTMAP_STATIC.name}: "
-            f"{cells}x{cells} cells @ {resolution} m/cell ({size_m} m square)"
+            f"{cells}x{cells} cells @ {resolution} m/cell ({size_m} m square, "
+            f"center=({center_x}, {center_y}))"
         )
 
     def on_gps_fix(self, fix_msg: ros.NavSatFix) -> None:
