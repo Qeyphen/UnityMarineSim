@@ -76,7 +76,6 @@ public class DatasetCaptureScheduler : MonoBehaviour
 
         perceptionCamera.RequestCapture();
         frameCount++;
-        Debug.Log($"[DatasetCapture] RequestCapture #{frameCount}");   // diagnostic
     }
 
     void SetRecording(bool on)

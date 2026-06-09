@@ -4,8 +4,8 @@ so you can eyeball label quality.
 
 Setup:  pip install pillow
 Usage:
-  python3 solo_preview.py /path/to/solo              # all sequences under the SOLO root
-  python3 solo_preview.py /path/to/solo/sequence.0   # a single sequence
+  python3 solo_preview.py                  # auto-find the latest SOLO dataset
+  python3 solo_preview.py /path/to/solo    # a specific SOLO root or sequence
 
 Writes annotated images next to each frame, in a `preview/` subfolder.
 Red rectangle = 2D bbox, yellow text = labelName.
@@ -57,19 +57,32 @@ def process_frame(frame_json_path):
         print(f"  wrote {out_path}  ({len(boxes)} boxes)")
 
 
+def find_latest_solo():
+    """Find the most recently written SOLO dataset under Unity's persistent data path."""
+    home = os.path.expanduser("~")
+    patterns = [
+        os.path.join(home, ".config/unity3d/*/*/solo*"),               # Linux
+        os.path.join(home, "Library/Application Support/*/*/solo*"),   # macOS
+    ]
+    dirs = [d for pat in patterns for d in glob.glob(pat) if os.path.isdir(d)]
+    return max(dirs, key=os.path.getmtime) if dirs else None
+
+
 def main():
-    if len(sys.argv) < 2:
-        print("usage: solo_preview.py <solo_or_sequence_dir>")
+    root = sys.argv[1] if len(sys.argv) > 1 else find_latest_solo()
+    if not root:
+        print("No SOLO dataset found automatically. Pass the path: solo_preview.py <dir>")
         return
-    root = sys.argv[1]
+
     frames = glob.glob(os.path.join(root, "**", "*frame_data.json"), recursive=True)
     if not frames:
         print(f"no *frame_data.json found under {root}")
         return
-    print(f"found {len(frames)} frame(s)")
+    print(f"dataset: {root}\nfound {len(frames)} frame(s)")
     for fp in sorted(frames):
         print(os.path.relpath(fp, root))
         process_frame(fp)
+    print("done — open the 'preview/' subfolder(s) to view annotated frames.")
 
 
 if __name__ == "__main__":
