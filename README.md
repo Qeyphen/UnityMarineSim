@@ -73,10 +73,14 @@ docker compose exec ros_bridge bash -lc \
 Other options:
 ```bash
 # pick a different agent's topic
-ros2 launch n3mo_control target_pose.launch.py topic:=/agent_02/target_pose x:=10 z:=25
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 launch n3mo_control target_pose.launch.py topic:=/agent_02/target_pose x:=10 z:=25"
 
 # run the node directly instead of the launch file
-ros2 run n3mo_control target_pose_publisher --ros-args -p x:=-190.0 -p z:=-110.0
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 run n3mo_control target_pose_publisher --ros-args -p x:=-190.0 -p z:=-110.0"
 ```
 
 The boat turns toward the target, then thrusts; watch its `AutonomousBoatController.Status`
@@ -86,16 +90,39 @@ in the Inspector cycle **Turning → Thrusting → Settled**.
 
 ## 5. Inspect topics (CLI)
 
-All commands run inside the bridge container. Prefix:
-`docker compose exec ros_bridge bash -lc "source /opt/ros/humble/setup.bash && <cmd>"`
+These use only standard message types, so they need just the base ROS source.
 
 ```bash
-ros2 topic list                          # what's being published
-ros2 topic echo /agent_01/target_pose    # watch target poses
-ros2 topic echo /dynamic_obstacles       # watch live boat positions
-ros2 topic echo /map --field info        # map metadata only (don't echo the huge data array)
-ros2 topic hz /dynamic_obstacles         # publish rate
+# what's being published
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic list"
+
+# watch target poses
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic echo /agent_01/target_pose"
+
+# watch live boat positions
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic echo /dynamic_obstacles"
+
+# map metadata only (don't echo the huge data array); latched, so --once returns it
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic echo /map --field info --once"
+
+# publish rate
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic hz /dynamic_obstacles"
 ```
+
+> **Tip — shell shortcut.** Add this to `~/.zshrc` (or `~/.bashrc`) to skip the boilerplate.
+> It sources both setups, which works for every command (the workspace overlay re-exposes
+> base ROS):
+> ```bash
+> dros() { docker exec -it n3mo_bridge bash -lc \
+>   "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && ros2 $*"; }
+> ```
+> Then: `dros topic list`, `dros topic echo /dynamic_obstacles`,
+> `dros launch n3mo_control target_pose.launch.py x:=-190 z:=-110`.
 
 ---
 
