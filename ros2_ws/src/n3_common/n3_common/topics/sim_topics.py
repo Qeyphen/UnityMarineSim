@@ -1,4 +1,4 @@
-from .topics_model import BEST_EFFORT_QOS, LATCHED_QOS, TopicSpec
+from .topics_model import BEST_EFFORT_QOS, LATCHED_QOS, RELIABLE_QOS, TopicSpec
 
 # --- sim commands (physical units, from naveol_sim or test scripts) ---
 SIM_CMD_RUDDER_ANGLE = TopicSpec(name="/sim/cmd/rudder_angle", qos=BEST_EFFORT_QOS)
@@ -11,7 +11,7 @@ SIM_VELOCITY = TopicSpec(name="/sim/boat/velocity", qos=BEST_EFFORT_QOS)
 SIM_SAIL_ANGLE_STATE = TopicSpec(name="/sim/boat/sail_angle", qos=BEST_EFFORT_QOS)
 
 # --- scenario generator / detection pipeline ---
-SIM_TRACKS = TopicSpec(name="/sim/tracks", qos=BEST_EFFORT_QOS)
+SIM_TRACKS = TopicSpec(name="/sim/tracks", qos=RELIABLE_QOS)  # reliable so the ROS-TCP-Endpoint subscriber receives it
 SIM_DETECTIONS = TopicSpec(name="/sim/detections", qos=BEST_EFFORT_QOS)
 SIM_TRACKS_MARKERS = TopicSpec(name="/sim/tracks/markers", qos=BEST_EFFORT_QOS)
 
