@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 1040059999127689028}
   - component: {fileID: 5787516499859351434}
   - component: {fileID: 2847800873581914893}
+  - component: {fileID: 3619622454976305999}
   m_Layer: 0
   m_Name: Buoy
   m_TagString: Untagged
@@ -194,6 +195,23 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3619622454976305999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4734132394604540621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b33f0bc2b78db642a758f07826d0dd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Perception.Runtime::UnityEngine.Perception.GroundTruth.LabelManagement.Labeling
+  labels:
+  - buoy
+  - static_obstacle
+  useAutoLabeling: 0
+  autoLabelingSchemeType: 
 --- !u!1 &4855197958683426007
 GameObject:
   m_ObjectHideFlags: 0
