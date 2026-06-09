@@ -37,6 +37,11 @@ public class DatasetCaptureScheduler : MonoBehaviour
     [Tooltip("Keyboard key that toggles recording on/off.")]
     public Key toggleKey = Key.R;
 
+    [Header("Ego vessel")]
+    [Tooltip("Clear the Labeling on this camera's own vessel so the boat doesn't " +
+             "label its own hull as an obstacle in its captures.")]
+    public bool excludeOwnVessel = true;
+
     private PerceptionCamera perceptionCamera;
     private ROSConnection    ros;
     private float            timer;
@@ -57,6 +62,18 @@ public class DatasetCaptureScheduler : MonoBehaviour
         ros.Subscribe<BoolMsg>(controlTopic, OnControl);
         Debug.Log($"[DatasetCapture] Ready. ROS '{controlTopic}' (true=start/false=stop), " +
                   $"hotkey '{toggleKey}', rate {captureHz} Hz.");
+
+        if (excludeOwnVessel)
+        {
+            // The Labeling sits on the boat root; this camera is a child of it.
+            Labeling own = GetComponentInParent<Labeling>();
+            if (own != null)
+            {
+                own.labels.Clear();
+                own.RefreshLabeling();   // re-evaluate: no labels -> not captured by any labeler
+                Debug.Log($"[DatasetCapture] Cleared ego-vessel labels on '{own.name}' (won't self-label).");
+            }
+        }
     }
 
     void OnControl(BoolMsg msg) => SetRecording(msg.data);
