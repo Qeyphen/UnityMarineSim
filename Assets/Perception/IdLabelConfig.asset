@@ -22,5 +22,23 @@ MonoBehaviour:
   - label: Character
     id: 3
     hierarchyRelation: 0
+  - label: dynamic_obstacle
+    id: 4
+    hierarchyRelation: 0
+  - label: jet_ski
+    id: 5
+    hierarchyRelation: 0
+  - label: kayak
+    id: 6
+    hierarchyRelation: 0
+  - label: catamaran
+    id: 7
+    hierarchyRelation: 0
+  - label: static_obstacle
+    id: 8
+    hierarchyRelation: 0
+  - label: New Label_1
+    id: 9
+    hierarchyRelation: 0
   autoAssignIds: 1
   startingLabelId: 1
