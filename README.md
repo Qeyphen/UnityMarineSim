@@ -126,22 +126,35 @@ docker compose exec ros_bridge bash -lc \
 
 ---
 
-## 6. View the occupancy grid
+## 6. View the map (terminal tools)
 
-### Terminal (ASCII) — quickest, headless
+What each tool shows: `/map` is the **static** layer (buoys); `/dynamic_obstacles` is the
+**live** layer (boats). `view_map.py`/`save_map.py` show only the static map;
+`view_live.py` overlays both.
+
+### Live scene — static + moving boats (colour, headless)
+```bash
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && python3 /root/ros2_ws/src/n3mo_control/tools/view_live.py"
+```
+Redraws ~4×/s: **blue dots = static buoys**, **red dots = live boats** (move as you drive),
+each labelled with its `(x, z)` position just above the dot. Ctrl-C to quit. No GUI needed.
+
+### Static map only (ASCII)
 ```bash
 docker compose exec ros_bridge bash -lc \
  "source /opt/ros/humble/setup.bash && python3 /root/ros2_ws/src/n3mo_control/tools/view_map.py"
 ```
-`#` = occupied, `.` = free.
+`#` = occupied (buoy), `.` = free. First line shows `occupied=N` (true occupied-cell count).
 
-### Save to an image
+### Save the static map to an image
 ```bash
 docker compose exec ros_bridge bash -lc \
  "source /opt/ros/humble/setup.bash && python3 /root/ros2_ws/src/n3mo_control/tools/save_map.py"
 ```
-Writes `recordings/map.png` + `recordings/map.yaml` (host-visible). Open the PNG in any
-image viewer.
+Writes `recordings/map.png` (full, 1 px/cell — mostly white, zoom in to see buoys),
+`recordings/map_zoom.png` (cropped + 8× upscaled — buoys clearly visible), and
+`recordings/map.yaml` (ROS map metadata). Open the PNGs on the host.
 
 ---
 

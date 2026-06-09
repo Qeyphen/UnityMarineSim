@@ -55,6 +55,6 @@ services:
       bash -c "
         apt-get update >/dev/null && apt-get install -y ros-humble-rmw-cyclonedds-cpp >/dev/null &&
         source /opt/ros/humble/setup.bash &&
-        ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map base_link &
+        ( ros2 run tf2_ros static_transform_publisher --frame-id map --child-frame-id base_link & ) &&
         rviz2 -d /config/n3mo.rviz
       "

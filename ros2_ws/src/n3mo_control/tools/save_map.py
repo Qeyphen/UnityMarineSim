@@ -20,8 +20,11 @@ from rclpy.qos import (QoSProfile, QoSDurabilityPolicy,
                        QoSReliabilityPolicy, QoSHistoryPolicy)
 from nav_msgs.msg import OccupancyGrid
 
-OUT_PNG  = "/recordings/map.png"
+OUT_PNG  = "/recordings/map.png"        # full grid, 1 px/cell (ROS standard)
 OUT_YAML = "/recordings/map.yaml"
+OUT_ZOOM = "/recordings/map_zoom.png"   # cropped to obstacles + upscaled (human-viewable)
+ZOOM_SCALE  = 8     # pixels per cell in the zoom image
+ZOOM_MARGIN = 15    # cells of padding around the occupied region
 
 # ROS map_server greyscale convention.
 OCCUPIED = 0      # black
@@ -84,9 +87,39 @@ class MapSaver(Node):
                 f"negate: 0\noccupied_thresh: 0.65\nfree_thresh: 0.196\n"
             )
 
-        occupied = sum(1 for v in data if v >= 50)
+        occupied = self.write_zoom(w, h, data)
         self.get_logger().info(
-            f"Saved {w}x{h} map -> {OUT_PNG} ({occupied} occupied cells).")
+            f"Saved {w}x{h} map -> {OUT_PNG} ({occupied} occupied cells); "
+            f"zoom -> {OUT_ZOOM}.")
+
+    def write_zoom(self, w, h, data):
+        """Crop to the occupied region (+margin), upscale, save a viewable PNG.
+        Returns the occupied-cell count."""
+        occ = [i for i, v in enumerate(data) if v >= 50]
+        if not occ:
+            return 0
+
+        cols = [i % w for i in occ]
+        rows = [i // w for i in occ]
+        cmin = max(0, min(cols) - ZOOM_MARGIN)
+        cmax = min(w - 1, max(cols) + ZOOM_MARGIN)
+        rmin = max(0, min(rows) - ZOOM_MARGIN)
+        rmax = min(h - 1, max(rows) + ZOOM_MARGIN)
+
+        out_rows = []
+        for y in range(rmax, rmin - 1, -1):     # top-down
+            base = y * w
+            line = bytearray()
+            for x in range(cmin, cmax + 1):
+                v = data[base + x]
+                px = OCCUPIED if v >= 50 else (UNKNOWN if v < 0 else FREE)
+                line.extend([px] * ZOOM_SCALE)   # widen each cell
+            for _ in range(ZOOM_SCALE):          # repeat each row
+                out_rows.append(bytes(line))
+
+        write_png(OUT_ZOOM, (cmax - cmin + 1) * ZOOM_SCALE,
+                  (rmax - rmin + 1) * ZOOM_SCALE, out_rows)
+        return len(occ)
 
 
 def main():
