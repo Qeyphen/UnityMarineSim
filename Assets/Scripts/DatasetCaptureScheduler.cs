@@ -48,6 +48,7 @@ public class DatasetCaptureScheduler : MonoBehaviour
         // NOTE: set "Capture Trigger Mode = Manual" on the Perception Camera in the
         // Inspector. We don't set it here because the enum's name/namespace differs
         // between Perception versions.
+        Debug.Log($"[DatasetCapture] Awake — PerceptionCamera found: {perceptionCamera != null}");
     }
 
     void Start()
@@ -66,7 +67,7 @@ public class DatasetCaptureScheduler : MonoBehaviour
         if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame)
             SetRecording(!capturing);
 
-        if (!capturing || captureHz <= 0f) return;
+        if (!capturing || captureHz <= 0f || perceptionCamera == null) return;
 
         timer += Time.deltaTime;
         float interval = 1f / captureHz;
@@ -75,6 +76,7 @@ public class DatasetCaptureScheduler : MonoBehaviour
 
         perceptionCamera.RequestCapture();
         frameCount++;
+        Debug.Log($"[DatasetCapture] RequestCapture #{frameCount}");   // diagnostic
     }
 
     void SetRecording(bool on)
