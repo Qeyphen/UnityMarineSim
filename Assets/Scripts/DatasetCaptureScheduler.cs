@@ -19,8 +19,9 @@ using RosMessageTypes.Std;
 ///   Hotkey <see cref="toggleKey"/> toggles on/off.
 ///
 /// Perception API used (UnityEngine.Perception.GroundTruth):
-///   PerceptionCamera.captureTriggerMode = CaptureTriggerMode.Manual;
 ///   PerceptionCamera.RequestCapture();   // queues one capture for end of frame
+/// Set the camera's "Capture Trigger Mode = Manual" in the Inspector (the enum name
+/// varies across Perception versions, so we don't set it from code).
 /// </summary>
 [RequireComponent(typeof(PerceptionCamera))]
 public class DatasetCaptureScheduler : MonoBehaviour
@@ -44,7 +45,9 @@ public class DatasetCaptureScheduler : MonoBehaviour
     void Awake()
     {
         perceptionCamera = GetComponent<PerceptionCamera>();
-        perceptionCamera.captureTriggerMode = CaptureTriggerMode.Manual;
+        // NOTE: set "Capture Trigger Mode = Manual" on the Perception Camera in the
+        // Inspector. We don't set it here because the enum's name/namespace differs
+        // between Perception versions.
     }
 
     void Start()
