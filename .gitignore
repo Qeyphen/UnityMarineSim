@@ -7,3 +7,9 @@ UserSettings/
 .vscode/
 .venv/
 __pycache__/
+# reference repo — the bits we use are vendored into ros2_ws/src
+n3-unity-sim-main/
+# ROS build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/

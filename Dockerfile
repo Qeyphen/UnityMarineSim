@@ -2,9 +2,15 @@ FROM ros:humble
 
 RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
+    python3-pip \
     git \
     ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-geographic-msgs \
+    ros-humble-visualization-msgs \
     && rm -rf /var/lib/apt/lists/*
+
+# Python deps for the n3_sim scenario generator (n3_common params + YAML scenarios).
+RUN pip3 install --no-cache-dir pydantic pyyaml
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
@@ -17,6 +23,11 @@ RUN mkdir -p /root/ros2_ws/src && \
     echo "ROS TCP Endpoint cloned!"
 
 COPY ros2_ws/src/n3mo_control /root/ros2_ws/src/n3mo_control
+
+# Vendored n3-unity-sim packages for the scenario generator.
+COPY ros2_ws/src/n3_new_msgs /root/ros2_ws/src/n3_new_msgs
+COPY ros2_ws/src/n3_common   /root/ros2_ws/src/n3_common
+COPY ros2_ws/src/n3_sim      /root/ros2_ws/src/n3_sim
 
 RUN . /opt/ros/humble/setup.sh && \
     cd /root/ros2_ws && \
