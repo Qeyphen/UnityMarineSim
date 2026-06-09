@@ -16,6 +16,8 @@ services:
       - "10000:10000"
     volumes:
       - ./ros2_ws/src/n3mo_control:/root/ros2_ws/src/n3mo_control
+      - ./ros2_ws/src/n3_common:/root/ros2_ws/src/n3_common
+      - ./ros2_ws/src/n3_sim:/root/ros2_ws/src/n3_sim
       - ./config:/n3mosim/config
       - ./recordings:/recordings
     environment:

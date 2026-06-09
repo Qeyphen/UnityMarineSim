@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from typing import Any, get_args, get_origin
+from typing import Any, Generic, TypeVar, get_args, get_origin
 
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
@@ -26,8 +26,10 @@ class ParamChange:
 
 OnParamsChanged = Callable[[list[ParamChange]], None]
 
+ModelT = TypeVar("ModelT", bound=BaseModel)  # backported from PEP 695 (py3.12) for py3.10
 
-class PydanticParamsBase[ModelT: BaseModel]:
+
+class PydanticParamsBase(Generic[ModelT]):
     """Bridge between a pydantic BaseModel and ROS2 parameters.
 
     Subclasses parameterize the generic with their pydantic model and set

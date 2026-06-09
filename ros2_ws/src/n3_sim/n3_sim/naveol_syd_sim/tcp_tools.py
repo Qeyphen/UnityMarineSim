@@ -1,7 +1,10 @@
 import logging
+from typing import TypeVar
 
 import zmq
 from pydantic import BaseModel
+
+T = TypeVar("T", bound=BaseModel)  # backported from PEP 695 (py3.12) for py3.10
 
 
 class PubSubParams(BaseModel):
@@ -88,7 +91,7 @@ class SYDTcpInterface:
         except zmq.ZMQError:
             logger.exception("Failed to send command on publisher socket")
 
-    def receive[T: BaseModel](self, model_class: type[T]) -> T | None:
+    def receive(self, model_class: type[T]) -> T | None:
         if self.sub_socket is None:
             return None
         try:
