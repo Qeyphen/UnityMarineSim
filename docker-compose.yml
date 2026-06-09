@@ -43,11 +43,14 @@ services:
       - ros_net
     volumes:
       - ./config:/config
+      # Linux uses the host X11 socket; harmless (empty) on macOS, which uses TCP.
+      - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - CYCLONEDDS_URI=<CycloneDDS><Domain><General><NetworkInterfaceAddress>eth0</NetworkInterfaceAddress></General></Domain></CycloneDDS>
-      - DISPLAY=host.docker.internal:0
+      # Linux: inherits the host's $DISPLAY (e.g. :0). macOS: export DISPLAY=host.docker.internal:0
+      - DISPLAY=${DISPLAY:-host.docker.internal:0}
     command: >
       bash -c "
         apt-get update >/dev/null && apt-get install -y ros-humble-rmw-cyclonedds-cpp >/dev/null &&
