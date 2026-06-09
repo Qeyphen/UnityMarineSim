@@ -2,8 +2,13 @@
 
 Unity marine simulator with a ROS 2 bridge. Boats are spawned from a JSON scene,
 driven either manually (keyboard) or autonomously (toward a ROS target pose), and
-the scene is exposed to ROS 2 as an occupancy grid (`/map`) plus live dynamic
-obstacles (`/dynamic_obstacles`).
+the scene is exposed to ROS 2 as an occupancy grid (`/map`).
+
+On top of that, a **ROS scenario generator** procedurally populates the water with
+**moving traffic** (sailboats, swimmers, buoys, …) on `/sim/tracks`, which Unity renders
+and RViz visualizes. Unity's own `/map` is fed back to the generator as a **costmap**, so
+traffic spawns only in navigable water — a closed loop (see §10). This is the source of
+varied, auto-labeled obstacles for the perception dataset (§9).
 
 ```
 Unity  ──TCP(10000)──►  ros_tcp_endpoint (Docker)  ──DDS──►  ROS 2 nodes / RViz / CLI
@@ -47,9 +52,12 @@ Then press **Play** in Unity. The bridge and Unity connect automatically.
 | Topic | Type | Direction | Notes |
 |---|---|---|---|
 | `/agent_01/target_pose` | `geometry_msgs/PoseStamped` | → Unity | goal for the boat; published on demand |
-| `/map` | `nav_msgs/OccupancyGrid` | Unity → | static obstacles (buoys); latched, sent once |
-| `/dynamic_obstacles` | `geometry_msgs/PoseArray` | Unity → | ALL moving boats; 10 Hz |
-| `/{id}/dynamic_obstacles` | `geometry_msgs/PoseArray` | Unity → | other boats (self-excluded); 10 Hz |
+| `/map` | `nav_msgs/OccupancyGrid` | Unity → | static obstacles (island + buoys); latched |
+| `/sim/tracks` | `n3_new_msgs/TrackArray` | ROS → Unity | procedural moving traffic (id/type/pose/vel); 10 Hz |
+| `/sim/tracks/markers` | `visualization_msgs/MarkerArray` | ROS → RViz | traffic as colored cubes |
+| `/sim/boat/pose` | `geometry_msgs/PoseStamped` | Unity → | ego boat pose; 10 Hz |
+| `/map/costmap_static` | `nav_msgs/OccupancyGrid` | — | the costmap the generator reads (= `/map`, remapped) |
+| `/dynamic_obstacles` | `geometry_msgs/PoseArray` | Unity → | **legacy** Unity-spawned boats; superseded by `/sim/tracks` |
 
 **Coordinate conventions (important):**
 - Control channel (`target_pose`): `position.x` = Unity x, `position.z` = Unity z, `y = 0`.
@@ -158,16 +166,17 @@ Writes `recordings/map.png` (full, 1 px/cell — mostly white, zoom in to see bu
 
 ---
 
-## 7. RViz2 (live map of static + dynamic objects)
+## 7. RViz2 (integrated view)
 
-Opt-in GUI service (profile `gui`). Shows buoys as grid cells and boats as live arrows.
-Preloaded config: `config/n3mo.rviz`.
+The `rviz` profile starts **everything**: the bridge, the **scenario engine** (traffic +
+markers, see §10), and RViz with the preloaded config (`config/n3mo.rviz`). Displays: **Map**
+(`/map`), **Tracks** (`/sim/tracks/markers`, colored cubes), **Ego** (`/sim/boat/pose`, green
+arrow). Run `docker compose build` once first so the image has the scenario nodes.
 
 ### Linux
 ```bash
 xhost +local:docker                      # allow containers to use your X server (per session)
-docker compose up -d                     # bridge
-docker compose --profile gui up rviz     # RViz window opens
+docker compose --profile rviz up         # bridge + scenario engine + RViz window
 ```
 
 ### macOS (needs XQuartz)
@@ -176,14 +185,11 @@ brew install --cask xquartz
 open -a XQuartz                          # Settings → Security → ✅ "Allow connections from network clients", then reopen
 xhost + 127.0.0.1
 export DISPLAY=host.docker.internal:0
-docker compose --profile gui up rviz
+docker compose --profile rviz up
 ```
 
-In RViz the Fixed Frame is `map`; the **Map** (`/map`) and **PoseArray**
-(`/dynamic_obstacles`) displays are already added. Press **Play** in Unity first so the
-topics exist.
-
-Stop RViz: `docker compose --profile gui down rviz` (or Ctrl-C).
+Fixed Frame is `map`. Press **Play** in Unity so `/map` is published — the generator then
+auto-generates traffic and RViz fills in. Stop: `docker compose --profile rviz down` (or Ctrl-C).
 
 ---
 
@@ -268,7 +274,111 @@ each captured frame.
 
 ---
 
-## 10. Layout
+## 10. Procedural traffic + map architecture (scenario generator)
+
+A **ROS scenario generator** (vendored from `n3-unity-sim` into `ros2_ws/src/`) populates the
+water with **procedural moving traffic** that Unity renders and RViz visualizes. It's the
+source of varied, labeled obstacles for the dataset (§9).
+
+### The two map layers — static vs dynamic
+
+The sim exposes the scene to ROS as **two distinct layers**; don't conflate them:
+
+| Layer | Topic | What it is | Owner / direction |
+|---|---|---|---|
+| **Static map** | `/map` (`OccupancyGrid`) | fixed geometry: island + buoys, as a grid of free/occupied cells | Unity `OccupancyGridPublisher` (Unity → ROS) |
+| **Dynamic traffic** | `/sim/tracks` (`TrackArray`) | moving obstacles, each id/type/pose/velocity | ROS `scenario_generator` (ROS → Unity) |
+
+The **static** layer flows Unity → ROS (Unity knows the geometry). The **dynamic** layer flows
+ROS → Unity (the generator invents the traffic; Unity renders it via `TrackSpawner.cs`).
+
+> **The old `DynamicObstaclePublisher` (`/dynamic_obstacles`) is obsolete.** It used to export
+> Unity-spawned boats to ROS, back when Unity owned the moving obstacles. Now traffic
+> *originates* in ROS as `/sim/tracks`, so re-publishing it from Unity would be a pointless
+> round-trip. Disable that component; the dynamic layer is the tracks.
+
+### What is a costmap?
+
+A **costmap** is an occupancy grid used for *planning*: a 2D grid where each cell marks that
+patch of world as **free** (`0`, navigable water) or **occupied** (`100`, obstacle). The
+generator reads the static map **as a costmap** to decide where traffic may go — it samples
+spawn points and waypoint paths only in free cells, eroded by a safety margin around
+obstacles. So **`/map` *is* the costmap**: the generator subscribes to it (remapped to
+`/map/costmap_static`) and places boats only in navigable water, automatically avoiding the
+island and buoys. Add scene geometry not spawned by SceneBuilder (e.g. the island) to
+`OccupancyGridPublisher → Extra Obstacles` so it appears in the costmap.
+
+### The closed loop
+
+```
+Unity /map (island+buoys) ──► scenario_generator ──► /sim/tracks ──► TrackSpawner (Unity 3D)
+   ▲  OccupancyGridPublisher     (samples free water)      └────────► /sim/tracks/markers ─► RViz
+   └───────────── ego /sim/boat/pose ◄── EgoPosePublisher ──────────────────────────────► RViz
+```
+
+Unity's own map drives the traffic; the traffic renders in both Unity and RViz; the ego is tracked.
+
+### Run the whole thing — one command
+
+```bash
+docker compose build                 # once (bakes the scenario nodes into the image)
+docker compose --profile rviz up     # ros_bridge + scenario engine + tracks_markers + RViz
+```
+Then press **Play** in Unity. The generator **auto-generates the moment Unity's `/map`
+arrives** (`gen_on_first_costmap`) — no manual trigger. In RViz you'll see the map (occupied
+island/buoys), colored cubes (traffic, moving, in the water), and a green arrow (the ego). In
+Unity, `TrackSpawner` spawns catamarans/buoys in open water.
+
+> ⚠️ **Set `OccupancyGridPublisher → Resolution = 5` (m/cell).** At the 1 m default a 1 km map
+> is 1,000,000 cells and the generator's margin erosion takes ~a minute. 5 m → instant.
+
+Unity wiring (one-time): add the island to `OccupancyGridPublisher → Extra Obstacles`, put
+`EgoPosePublisher` on the boat prefab, and disable `DynamicObstaclePublisher`.
+
+### Run / tune the engine manually
+
+```bash
+# start detached, leave running while Unity plays
+docker compose exec -d ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 run n3_sim scenario_generator --ros-args -r /map/costmap_static:=/map \
+    -p gen_on_first_costmap:=true -p gen_track_count:=10"
+docker compose exec -d ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 run n3_sim tracks_markers"
+
+# inspect the traffic
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 topic echo /sim/tracks --once"
+```
+
+Key generator params (`--ros-args -p name:=value`):
+
+| Param | Meaning |
+|---|---|
+| `gen_track_count` | number of tracks (0 = use `gen_density`) |
+| `gen_area_type` | type mix: `lake` / `coastal` / `harbor` / `open_sea` |
+| `gen_spawn_spread_s` | spawns staggered over `[0, N]` s (0 = all at once; >0 = steady flow) |
+| `gen_max_waypoints` | path length per track (longer = longer-lived) |
+| `gen_on_first_costmap` | auto-generate when the costmap (`/map`) arrives |
+| `gen_random_seed` | reproducible scenarios (0 = random) |
+
+Traffic **thins as tracks finish their paths**, then repopulates when the scenario loops —
+use `gen_spawn_spread_s > 0` for a steady population.
+
+> **Testing without the real map:** `map_manager` can publish a blank navigable square instead,
+> centered anywhere (e.g. on the ego boat at ENU `(0, -300)`):
+> ```bash
+> ros2 run n3_sim map_manager --ros-args -p publish_empty_costmap:=true \
+>   -p empty_costmap_size_m:=200 -p empty_costmap_center_y_m:=-300
+> ```
+> A blank map has no obstacles, so traffic can land on the island — use the real `/map`
+> (the `rviz` profile) for land-avoiding traffic.
+
+---
+
+## 11. Layout
 
 ```
 config/Scene.json          scene definition (objects, positions, control_mode)
@@ -278,13 +388,21 @@ Assets/Scripts/            Unity controllers + publishers
   ManualBoatController.cs    keyboard control
   AutonomousBoatController.cs ROS target-following control
   BoatControlSwitcher.cs     manual/auto switch (per boat)
-  OccupancyGridPublisher.cs  static /map
-  DynamicObstaclePublisher.cs live /dynamic_obstacles
+  OccupancyGridPublisher.cs  static /map (costmap source; + Extra Obstacles for the island)
+  DynamicObstaclePublisher.cs legacy /dynamic_obstacles (obsolete — superseded by /sim/tracks)
+  TrackSpawner.cs            subscribes /sim/tracks, spawns/moves/despawns traffic by type
+  EgoPosePublisher.cs        publishes the ego boat pose to /sim/boat/pose
   DatasetCaptureScheduler.cs Perception dataset capture (ROS/hotkey controlled)
+Assets/RosMessages/N3New/  hand-written Track / TrackArray C# messages (n3_new_msgs)
 ros2_ws/src/n3mo_control/  ROS 2 package (target_pose_publisher, tools/)
+ros2_ws/src/n3_sim/        vendored scenario generator (scenario_generator, map_manager,
+                             tracks_markers) + nodes
+ros2_ws/src/n3_common/     vendored shared lib (topics, params) used by n3_sim
+ros2_ws/src/n3_new_msgs/   vendored custom messages (Track, TrackArray, …)
 tools/solo_preview.py      overlay SOLO bounding boxes onto RGB frames
-docker-compose.yml         ros_bridge (+ opt-in rviz)
-Dockerfile                 ROS 2 Humble + ROS-TCP-Endpoint (+ patches)
+docker-compose.yml         ros_bridge; `--profile rviz` adds scenario engine + RViz
+Dockerfile                 ROS 2 Humble + ROS-TCP-Endpoint + n3_sim/n3_common/n3_new_msgs (+ patches)
 ```
 
-Requires the **com.unity.perception** package (for §9).
+Requires the **com.unity.perception** package (for §9). The scenario generator (§10) is
+vendored under `ros2_ws/src/` — see [`doc/todo.md`](doc/todo.md) for the dataset roadmap.
