@@ -198,19 +198,72 @@ Inspector while playing.
 
 ---
 
-## 9. Layout
+## 9. Synthetic dataset capture (Unity Perception)
+
+Captures **labeled boat-POV training data** for ML perception / obstacle detection, using
+the Unity **Perception** package. Each captured frame yields RGB + 2D & 3D bounding boxes +
+instance & semantic segmentation + depth, written in **SOLO** format.
+
+Taxonomy: segmentation `water / sky / static_obstacle / dynamic_obstacle`; detection `buoy`,
+`vessel`. (Phase 1 covers buoy/vessel + static/dynamic obstacle; water/sky come later.)
+
+### One-time Unity setup
+1. **Label the prefabs** — Add Component → **Labeling**:
+   - Buoy prefab → `buoy`, `static_obstacle`
+   - boat prefab(s) → `vessel`, `dynamic_obstacle`
+2. **Label configs** (in `Assets/Perception/`): **IdLabelConfig** (`buoy`, `vessel`),
+   **SemanticLabelConfig** (`static_obstacle`, `dynamic_obstacle`).
+3. **Boat POV camera** — a forward-facing Camera on the boat prefab with **Perception Camera**
+   + labelers (BoundingBox2D/3D, Instance, Semantic, Depth) assigned to those configs;
+   **Capture Trigger Mode = Manual**; render to a **1280×720** Render Texture (fixes
+   resolution + keeps it off the main view).
+4. **Add `DatasetCaptureScheduler`** to that camera — `Capture Hz = 3`,
+   `Control Topic = /dataset/control`.
+
+### Start / stop recording
+Capture only happens while recording is on. Toggle it any of three ways:
+```bash
+# START (ROS)
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic pub --once /dataset/control std_msgs/Bool '{data: true}'"
+# STOP (ROS)
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && ros2 topic pub --once /dataset/control std_msgs/Bool '{data: false}'"
+```
+- **Hotkey:** press **R** in the Unity Game window.
+- **Inspector:** toggle **Capturing** on the scheduler.
+
+Console logs `▶ START` / `■ STOP — N frames captured`. The dataset is finalized when you
+**stop Play**.
+
+### Output + preview
+SOLO output goes under `~/.config/unity3d/<Company>/<Product>/solo/` (exact path logged in
+the Console). Overlay the boxes to eyeball label quality:
+```bash
+pip install pillow
+python3 tools/solo_preview.py ~/.config/unity3d/<Company>/<Product>/solo
+```
+Writes annotated images to a `preview/` subfolder (red box + label per object).
+
+---
+
+## 10. Layout
 
 ```
-config/Scene.json         scene definition (objects, positions, control_mode)
-config/n3mo.rviz          preloaded RViz layout
-Assets/Scripts/           Unity controllers + publishers
-  SceneBuilder.cs           spawns objects, wires controllers + map publishers
+config/Scene.json          scene definition (objects, positions, control_mode)
+config/n3mo.rviz           preloaded RViz layout
+Assets/Scripts/            Unity controllers + publishers
+  SceneBuilder.cs            spawns objects, wires controllers + map publishers
   ManualBoatController.cs    keyboard control
   AutonomousBoatController.cs ROS target-following control
   BoatControlSwitcher.cs     manual/auto switch (per boat)
   OccupancyGridPublisher.cs  static /map
   DynamicObstaclePublisher.cs live /dynamic_obstacles
+  DatasetCaptureScheduler.cs Perception dataset capture (ROS/hotkey controlled)
 ros2_ws/src/n3mo_control/  ROS 2 package (target_pose_publisher, tools/)
+tools/solo_preview.py      overlay SOLO bounding boxes onto RGB frames
 docker-compose.yml         ros_bridge (+ opt-in rviz)
 Dockerfile                 ROS 2 Humble + ROS-TCP-Endpoint (+ patches)
 ```
+
+Requires the **com.unity.perception** package (for §9).

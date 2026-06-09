@@ -1,44 +1,69 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Perception.GroundTruth;
+using Unity.Robotics.ROSTCPConnector;
+using RosMessageTypes.Std;
 
 /// <summary>
-/// Drives a PerceptionCamera to capture at a fixed real-time rate (e.g. 3 Hz) during
-/// normal gameplay.
+/// Records a Perception dataset on demand: it only captures while "recording" is on,
+/// at a fixed real-time rate (e.g. 3 Hz). Start/stop is controlled either by a ROS
+/// message or a keyboard hotkey.
 ///
-/// Why manual triggering instead of Perception's "Scheduled" mode: Scheduled capture
-/// sets a fixed simulation delta time, which hijacks the physics timestep and decouples
-/// the sim from real time — bad for a live, physics-driven boat. Manual triggering on a
-/// wall-clock timer lets the sim run normally and just snapshots it N times per second.
+/// Manual capture (not Perception's Scheduled mode) is deliberate: Scheduled mode fixes
+/// the simulation timestep and decouples from real time, which would wreck the live
+/// physics-driven boat. We let the sim run normally and snapshot it N times/second only
+/// while recording.
 ///
-/// API used (Unity Perception, namespace UnityEngine.Perception.GroundTruth):
-///   PerceptionCamera.captureTriggerMode  (enum CaptureTriggerMode { Scheduled, Manual })
-///   PerceptionCamera.RequestCapture()    queues a capture for the end of the current frame
-/// If your Perception version names these differently, adjust here.
+/// Control:
+///   ROS topic <see cref="controlTopic"/> (std_msgs/Bool): data=true starts, data=false stops.
+///   Hotkey <see cref="toggleKey"/> toggles on/off.
+///
+/// Perception API used (UnityEngine.Perception.GroundTruth):
+///   PerceptionCamera.captureTriggerMode = CaptureTriggerMode.Manual;
+///   PerceptionCamera.RequestCapture();   // queues one capture for end of frame
 /// </summary>
 [RequireComponent(typeof(PerceptionCamera))]
 public class DatasetCaptureScheduler : MonoBehaviour
 {
-    [Tooltip("Captures per second.")]
+    [Header("Capture")]
     public float captureHz = 3f;
+    [Tooltip("Recording right now? Toggle live in the Inspector, or via ROS / hotkey.")]
+    public bool capturing = false;
 
-    [Tooltip("Skip capturing until the sim has run this long (lets the scene settle).")]
-    public float warmupSeconds = 1f;
+    [Header("Control")]
+    [Tooltip("ROS topic (std_msgs/Bool): true = start recording, false = stop.")]
+    public string controlTopic = "/dataset/control";
+    [Tooltip("Keyboard key that toggles recording on/off.")]
+    public Key toggleKey = Key.R;
 
     private PerceptionCamera perceptionCamera;
+    private ROSConnection    ros;
     private float            timer;
-    private float            elapsed;
+    private int              frameCount;
 
     void Awake()
     {
         perceptionCamera = GetComponent<PerceptionCamera>();
-        // Take control of when frames are captured.
         perceptionCamera.captureTriggerMode = CaptureTriggerMode.Manual;
     }
 
+    void Start()
+    {
+        ros = ROSConnection.GetOrCreateInstance();
+        ros.Subscribe<BoolMsg>(controlTopic, OnControl);
+        Debug.Log($"[DatasetCapture] Ready. ROS '{controlTopic}' (true=start/false=stop), " +
+                  $"hotkey '{toggleKey}', rate {captureHz} Hz.");
+    }
+
+    void OnControl(BoolMsg msg) => SetRecording(msg.data);
+
     void Update()
     {
-        elapsed += Time.deltaTime;
-        if (elapsed < warmupSeconds || captureHz <= 0f) return;
+        // Hotkey toggle.
+        if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame)
+            SetRecording(!capturing);
+
+        if (!capturing || captureHz <= 0f) return;
 
         timer += Time.deltaTime;
         float interval = 1f / captureHz;
@@ -46,5 +71,22 @@ public class DatasetCaptureScheduler : MonoBehaviour
         timer -= interval;
 
         perceptionCamera.RequestCapture();
+        frameCount++;
+    }
+
+    void SetRecording(bool on)
+    {
+        if (on == capturing) return;
+        capturing = on;
+        timer = 0f;
+        if (on)
+        {
+            frameCount = 0;
+            Debug.Log("[DatasetCapture] ▶ START recording.");
+        }
+        else
+        {
+            Debug.Log($"[DatasetCapture] ■ STOP recording — {frameCount} frames captured.");
+        }
     }
 }
