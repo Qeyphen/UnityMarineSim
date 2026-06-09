@@ -5,3 +5,5 @@ Logs/
 UserSettings/
 .Ds_Store
 .vscode/
+.venv/
+__pycache__/

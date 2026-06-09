@@ -238,12 +238,33 @@ Console logs `▶ START` / `■ STOP — N frames captured`. The dataset is fina
 
 ### Output + preview
 SOLO output goes under `~/.config/unity3d/<Company>/<Product>/solo/` (exact path logged in
-the Console). Overlay the boxes to eyeball label quality:
+the Console).
+
+**`solo_preview.py`** is a sanity check on your *labels*: a JSON number like
+`origin: [1001, 281]` doesn't tell you if a label is actually *correct*, so the tool reads
+each frame's `frame_data.json`, takes the 2D bounding boxes, and **draws them onto the RGB
+image** (red box + yellow label). Open the results and you can instantly see whether each
+box sits tightly on the right object — the fastest way to confirm the dataset is trainable
+before generating thousands of frames. It's read-only: it never changes the dataset, just
+writes annotated copies into a `preview/` subfolder.
+
+Run it from a Python venv in the project root (Pillow is its only dependency):
 ```bash
-pip install pillow
+# one-time
+python3 -m venv .venv
+source .venv/bin/activate            # Windows: .venv\Scripts\activate
+pip install pillow                   # (or: pip install -r requirements.txt)
+
+# each time
+python3 tools/solo_preview.py        # auto-finds the latest SOLO dataset
+# or point it at a specific one:
 python3 tools/solo_preview.py ~/.config/unity3d/<Company>/<Product>/solo
 ```
-Writes annotated images to a `preview/` subfolder (red box + label per object).
+With no path it auto-discovers the most recent SOLO dataset under
+`~/.config/unity3d/*/*/solo*`. Annotated frames land in a `preview/` subfolder next to
+each captured frame.
+
+> `.venv/` is gitignored — don't commit it. `requirements.txt` is the dependency record.
 
 ---
 
