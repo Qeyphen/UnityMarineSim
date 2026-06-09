@@ -39,7 +39,7 @@ class SimpleSimNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("simple_sim_node", enable_logger_service=True)
+        super().__init__("simple_sim_node")
 
         self.params = SimpleSimParams(self, on_change=self.on_params_changed)
         p = self.params.p

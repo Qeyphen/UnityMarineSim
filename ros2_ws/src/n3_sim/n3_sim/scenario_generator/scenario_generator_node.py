@@ -47,7 +47,7 @@ def _track_state_to_ros(state: TrackState) -> ros.Track:
 
 class ScenarioGeneratorNode(Node):
     def __init__(self) -> None:
-        super().__init__("scenario_generator_node", enable_logger_service=True)
+        super().__init__("scenario_generator_node")
 
         self.params = ScenarioGeneratorParams(self)
         p = self.params.p

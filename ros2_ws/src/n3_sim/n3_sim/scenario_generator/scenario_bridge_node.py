@@ -19,7 +19,7 @@ WS_PORT = 9877
 
 class ScenarioBridgeNode(Node):
     def __init__(self) -> None:
-        super().__init__("scenario_bridge_node", enable_logger_service=True)
+        super().__init__("scenario_bridge_node")
         self.log = self.get_logger()
 
         # Latest boat pose (ENU)

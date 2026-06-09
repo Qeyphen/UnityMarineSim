@@ -41,7 +41,7 @@ class NaveolSimNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("naveol_sim_node", enable_logger_service=True)
+        super().__init__("naveol_sim_node")
 
         self.params = NaveolSimParams(self)
         p = self.params.p

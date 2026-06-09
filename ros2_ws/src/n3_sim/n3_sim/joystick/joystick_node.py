@@ -27,7 +27,7 @@ class JoystickNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("joystick_node", enable_logger_service=True)
+        super().__init__("joystick_node")
 
         self.params = JoystickParams(self, on_change=lambda _: None)
 

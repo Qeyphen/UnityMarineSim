@@ -71,7 +71,7 @@ class FoxgloveConverterNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("foxglove_converter_node", enable_logger_service=True)
+        super().__init__("foxglove_converter_node")
 
         self.projector: LocalCartesianProjector | None = None
         self.boat_x = 0.0

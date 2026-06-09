@@ -60,7 +60,7 @@ class TestHarnessNode(Node):
     """Publishes fixed test inputs and relays sim pose to TF for Foxglove."""
 
     def __init__(self) -> None:
-        super().__init__("test_harness", enable_logger_service=True)
+        super().__init__("test_harness")
 
         self.params = TestHarnessParams(self, on_change=self.on_params_change)
         p = self.params.p

@@ -150,7 +150,7 @@ def _generate_random_walk(
 
 class BoatTrajGeneratorNode(Node):
     def __init__(self) -> None:
-        super().__init__("boat_traj_generator_node", enable_logger_service=True)
+        super().__init__("boat_traj_generator_node")
 
         self.params = BoatTrajGeneratorParams(self)
         p = self.params.p

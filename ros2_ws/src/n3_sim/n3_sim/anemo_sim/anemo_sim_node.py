@@ -173,7 +173,7 @@ class AnemoSimNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("anemo_sim_node", enable_logger_service=True)
+        super().__init__("anemo_sim_node")
 
         self.params = AnemoSimParams(self, on_change=self.on_params_changed)
         p = self.params.p

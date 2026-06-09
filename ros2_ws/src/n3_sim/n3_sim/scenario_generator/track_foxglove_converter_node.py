@@ -119,7 +119,7 @@ def _make_heading_marker(
 
 class TrackFoxgloveConverterNode(Node):
     def __init__(self) -> None:
-        super().__init__("track_foxglove_converter_node", enable_logger_service=True)
+        super().__init__("track_foxglove_converter_node")
 
         self.projector: LocalCartesianProjector | None = None
 
