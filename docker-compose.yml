@@ -34,11 +34,41 @@ services:
       "
     restart: unless-stopped
 
-  # Opt-in GUI: `docker compose --profile gui up rviz`. Needs XQuartz on the host.
+  # Scenario engine (traffic). Part of the integrated `rviz` profile.
+  # Reads Unity's /map as the costmap, auto-generates on the first map, and
+  # publishes /sim/tracks + /sim/tracks/markers. Run `docker compose build` first
+  # so the image has the current scenario code + the tracks_markers node.
+  scenario:
+    image: n3mo_control:latest
+    container_name: n3mo_scenario
+    profiles: ["rviz"]
+    depends_on:
+      - ros_bridge
+    networks:
+      - ros_net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=<CycloneDDS><Domain><General><NetworkInterfaceAddress>eth0</NetworkInterfaceAddress></General></Domain></CycloneDDS>
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /root/ros2_ws/install/setup.bash &&
+        ros2 run n3_sim tracks_markers &
+        ros2 run n3_sim scenario_generator --ros-args
+        -r /map/costmap_static:=/map
+        -p gen_on_first_costmap:=true
+        -p gen_track_count:=10
+        -p gen_spawn_spread_s:=20.0
+        -p gen_max_waypoints:=10
+      "
+    restart: unless-stopped
+
+  # Integrated GUI: `docker compose --profile rviz up`. Needs XQuartz/X11 on the host.
   rviz:
     image: osrf/ros:humble-desktop-full
     container_name: n3mo_rviz
-    profiles: ["gui"]
+    profiles: ["rviz"]
     depends_on:
       - ros_bridge
     networks:

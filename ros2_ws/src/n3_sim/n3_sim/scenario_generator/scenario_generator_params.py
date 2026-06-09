@@ -42,6 +42,11 @@ class ScenarioGeneratorModel(BaseModel):
     gen_autostart: bool = Field(
         default=True, description="Load and start scenario after generation."
     )
+    gen_on_first_costmap: bool = Field(
+        default=False,
+        description="Auto-generate a scenario the first time a costmap arrives "
+        "(no service call needed — for the integrated bringup).",
+    )
     gen_min_speed_kts: float = Field(
         default=0.0, ge=0.0, description="Min track speed (0 = type default)."
     )

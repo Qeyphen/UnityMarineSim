@@ -34,6 +34,11 @@ public class OccupancyGridPublisher : MonoBehaviour
     [Tooltip("Optional costmap inflation in metres (0 = off).")]
     public float inflationRadius = 0f;
 
+    [Header("Extra static obstacles")]
+    [Tooltip("Scene objects to ALSO rasterise into /map (e.g. the island) — things not " +
+             "spawned by SceneBuilder. Drag them here so the scenario generator avoids them.")]
+    public List<GameObject> extraObstacles = new List<GameObject>();
+
     private ROSConnection      ros;
     private List<GameObject>   obstacles = new List<GameObject>();
 
@@ -54,8 +59,11 @@ public class OccupancyGridPublisher : MonoBehaviour
         int rows = Mathf.Max(1, Mathf.CeilToInt(heightMeters / resolution));
         sbyte[] data = new sbyte[cols * rows];   // 0 = free
 
+        var all = new List<GameObject>(obstacles);
+        if (extraObstacles != null) all.AddRange(extraObstacles);
+
         int occupied = 0;
-        foreach (GameObject go in obstacles)
+        foreach (GameObject go in all)
         {
             if (go == null) continue;
 
@@ -86,7 +94,7 @@ public class OccupancyGridPublisher : MonoBehaviour
 
         ros.Publish(topic, BuildMessage(cols, rows, data));
         Debug.Log($"[OccupancyGridPublisher] Published {cols}x{rows} grid on '{topic}' " +
-                  $"(res={resolution}m, {obstacles.Count} obstacles, {occupied} occupied cells).");
+                  $"(res={resolution}m, {all.Count} obstacles, {occupied} occupied cells).");
     }
 
     // Combined world-space AABB of all renderers under the object (null if none).

@@ -43,6 +43,7 @@ setup(
             "track_foxglove_converter = n3_sim.scenario_generator.track_foxglove_converter_node:main",
             "scenario_bridge = n3_sim.scenario_generator.scenario_bridge_node:main",
             "map_manager= n3_sim.scenario_generator.map_manager_node:main",
+            "tracks_markers = n3_sim.scenario_generator.tracks_markers_node:main",
         ],
     },
 )

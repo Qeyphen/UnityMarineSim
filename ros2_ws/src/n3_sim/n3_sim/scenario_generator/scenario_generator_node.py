@@ -107,23 +107,23 @@ class ScenarioGeneratorNode(Node):
             return False
 
     def on_costmap(self, msg: ros.OccupancyGrid) -> None:
+        first = self.costmap_msg is None
         self.costmap_msg = msg
         self.log.info(
             f"Received costmap: {msg.info.width}x{msg.info.height}, "
             f"resolution={msg.info.resolution}m"
         )
+        if first and self.params.p.gen_on_first_costmap and self.scenario is None:
+            self.log.info("Auto-generating from first costmap (gen_on_first_costmap=true)")
+            self._generate()
 
-    def on_generate_scenario(
-        self,
-        _request: Trigger.Request,
-        response: Trigger.Response,
-    ) -> Trigger.Response:
+    def _generate(self) -> str | None:
+        """Generate + save a scenario from the current costmap. Returns the path, or None."""
         p = self.params.p
 
         if self.costmap_msg is None:
-            response.success = False
-            response.message = "No costmap received yet on " + COSTMAP_STATIC.name
-            return response
+            self.log.warn("Cannot generate: no costmap on " + COSTMAP_STATIC.name)
+            return None
 
         base_path = Path(p.gen_output_file)
         suffix = datetime.now().strftime("_%Y_%m_%d__%H:%M")
@@ -167,9 +167,20 @@ class ScenarioGeneratorNode(Node):
 
         if p.gen_autostart:
             self._load_scenario(str(output_path))
+        return str(output_path)
 
-        response.success = True
-        response.message = str(output_path)
+    def on_generate_scenario(
+        self,
+        _request: Trigger.Request,
+        response: Trigger.Response,
+    ) -> Trigger.Response:
+        path = self._generate()
+        if path is None:
+            response.success = False
+            response.message = "No costmap received yet on " + COSTMAP_STATIC.name
+        else:
+            response.success = True
+            response.message = path
         return response
 
     def on_timer(self) -> None:
