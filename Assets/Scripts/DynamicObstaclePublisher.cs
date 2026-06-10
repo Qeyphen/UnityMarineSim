@@ -1,114 +1,113 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.Geometry;
+using RosMessageTypes.N3New;
 
 /// <summary>
-/// Publishes the live positions of the moving (dynamic) boats as the "dynamic layer"
-/// that complements the static /map occupancy grid.
+/// Publishes EVERY object SceneBuilder spawned (the ego boat + the static buoys) as a single
+/// TrackArray on /scene/objects — a live ROS view of the authored scene: id, type, pose and
+/// velocity per object. Together with /sim/tracks (the procedural traffic) this enumerates the
+/// whole scene over ROS, so one can query "all objects and where they are."
 ///
-/// Two outputs, at <see cref="publishRate"/> Hz:
-///   * a GLOBAL topic (<see cref="globalTopic"/>, default /dynamic_obstacles) with
-///     EVERY agent — used for visualisation/monitoring (RViz) and a live "all objects" view.
-///   * per-agent "/{id}/dynamic_obstacles" with every OTHER agent — so a boat's own
-///     avoidance logic reads its topic without seeing itself.
+/// (Repurposed from the old PoseArray /dynamic_obstacles publisher, which became obsolete once
+///  the moving traffic started originating in ROS as /sim/tracks.)
 ///
-/// Coordinate convention for the MAP layer (matches the occupancy grid so RViz aligns):
-/// the ground plane is ROS XY -> Unity x = ROS x, Unity z = ROS y, ROS z = 0 (up).
-/// (Note this differs from the /target_pose control channel, which uses x/z.)
+/// Convention (map layer): Unity x -> ROS x, Unity z -> ROS y, Unity y = up = 0; heading from
+/// the object's forward as ENU yaw about ROS z. Scene-object ids start at 9000 (logged with
+/// their names) so they don't collide with the generator's track ids.
 /// </summary>
 public class DynamicObstaclePublisher : MonoBehaviour
 {
     [Header("ROS")]
-    [Tooltip("Per-agent topic is /{agentId}/{topicSuffix} (every OTHER agent).")]
-    public string topicSuffix = "dynamic_obstacles";
-    [Tooltip("Global topic with ALL agents (for RViz / live all-objects view). Empty = off.")]
-    public string globalTopic = "/dynamic_obstacles";
-    public string frameId     = "map";
+    public string topic   = "/scene/objects";
+    public string frameId = "map";
 
     [Header("Rate")]
     public float publishRate = 10f;   // Hz
 
-    private class Agent { public string id; public Transform tf; public string topic; }
+    /// <summary>One authored scene object to publish.</summary>
+    private class SceneObject
+    {
+        public uint      id;
+        public byte      type;      // n3_new_msgs/Track type constant
+        public Transform tf;
+        public bool      dynamic;   // compute velocity if true
+        public Vector3   lastPos;
+    }
 
-    private readonly List<Agent> agents = new List<Agent>();
+    private readonly List<SceneObject> objects = new List<SceneObject>();
     private ROSConnection ros;
     private float accumulator;
 
-    /// <summary>Registers the dynamic agents and their topics. Called by SceneBuilder.</summary>
-    public void SetAgents(Dictionary<string, GameObject> dynamicAgents)
+    /// <summary>Register every spawned object. Called by SceneBuilder.
+    /// Each tuple: (name, n3_new_msgs/Track type byte, transform, isDynamic).</summary>
+    public void SetObjects(List<(string name, byte type, Transform tf, bool dynamic)> sceneObjects)
     {
         ros = ROSConnection.GetOrCreateInstance();
-        agents.Clear();
+        ros.RegisterPublisher<TrackArrayMsg>(topic);
+        objects.Clear();
 
-        foreach (KeyValuePair<string, GameObject> kv in dynamicAgents)
+        uint nextId = 9000;
+        foreach (var o in sceneObjects)
         {
-            if (kv.Value == null) continue;
-            string topic = $"/{kv.Key}/{topicSuffix}";
-            ros.RegisterPublisher<PoseArrayMsg>(topic);
-            agents.Add(new Agent { id = kv.Key, tf = kv.Value.transform, topic = topic });
+            if (o.tf == null) continue;
+            objects.Add(new SceneObject
+            {
+                id = nextId, type = o.type, tf = o.tf,
+                dynamic = o.dynamic, lastPos = o.tf.position
+            });
+            Debug.Log($"[SceneObjects] id {nextId} = {o.name} (type {o.type})");
+            nextId++;
         }
-
-        if (!string.IsNullOrEmpty(globalTopic))
-            ros.RegisterPublisher<PoseArrayMsg>(globalTopic);
-
-        Debug.Log($"[DynamicObstaclePublisher] Tracking {agents.Count} dynamic agents " +
-                  $"at {publishRate} Hz (global topic '{globalTopic}').");
+        Debug.Log($"[SceneObjects] Publishing {objects.Count} scene objects on '{topic}' " +
+                  $"at {publishRate} Hz.");
     }
 
     void Update()
     {
-        if (agents.Count == 0 || publishRate <= 0f) return;
-
+        if (objects.Count == 0 || publishRate <= 0f) return;
         accumulator += Time.deltaTime;
-        if (accumulator < 1f / publishRate) return;
+        float interval = 1f / publishRate;
+        if (accumulator < interval) return;
+        float dt = accumulator;
         accumulator = 0f;
-
-        PublishAll();
+        Publish(dt);
     }
 
-    void PublishAll()
+    void Publish(float dt)
     {
-        // Snapshot every live agent's pose once.
-        List<Agent>   live  = new List<Agent>(agents.Count);
-        List<PoseMsg> poses = new List<PoseMsg>(agents.Count);
-        foreach (Agent a in agents)
+        List<TrackMsg> tracks = new List<TrackMsg>(objects.Count);
+        foreach (SceneObject o in objects)
         {
-            if (a.tf == null) continue;
-            live.Add(a);
-            poses.Add(ToPose(a.tf.position));
+            if (o.tf == null) continue;
+            Vector3 p = o.tf.position;
+
+            TrackMsg t = new TrackMsg();
+            t.id   = o.id;
+            t.type = o.type;
+            t.pose.position.x = p.x;   // Unity x -> ROS x
+            t.pose.position.y = p.z;   // Unity z -> ROS y
+            t.pose.position.z = 0.0;
+
+            Vector3 f = o.tf.forward;
+            float yaw = Mathf.Atan2(f.z, f.x);   // ENU yaw (East = 0, North = +y)
+            t.pose.orientation.z = Mathf.Sin(yaw / 2f);
+            t.pose.orientation.w = Mathf.Cos(yaw / 2f);
+
+            if (o.dynamic && dt > 0f)
+            {
+                Vector3 v = (p - o.lastPos) / dt;
+                t.twist.linear.x = v.x;   // Unity x -> ROS x
+                t.twist.linear.y = v.z;   // Unity z -> ROS y
+            }
+            o.lastPos = p;
+
+            tracks.Add(t);
         }
 
-        // Global: all agents (for RViz / monitoring).
-        if (!string.IsNullOrEmpty(globalTopic))
-            ros.Publish(globalTopic, MakeMsg(poses));
-
-        // Per-agent: every OTHER agent (self excluded), for avoidance.
-        for (int i = 0; i < live.Count; i++)
-        {
-            List<PoseMsg> others = new List<PoseMsg>(live.Count - 1);
-            for (int j = 0; j < live.Count; j++)
-                if (j != i) others.Add(poses[j]);
-            ros.Publish(live[i].topic, MakeMsg(others));
-        }
-    }
-
-    // Unity ground plane (x, z) -> ROS ground plane (x, y), z = up = 0.
-    static PoseMsg ToPose(Vector3 p)
-    {
-        PoseMsg pose = new PoseMsg();
-        pose.position.x    = p.x;   // Unity x -> ROS x
-        pose.position.y    = p.z;   // Unity z -> ROS y
-        pose.position.z    = 0f;    // up
-        pose.orientation.w = 1.0;   // identity
-        return pose;
-    }
-
-    PoseArrayMsg MakeMsg(List<PoseMsg> poses)
-    {
-        PoseArrayMsg msg = new PoseArrayMsg();
+        TrackArrayMsg msg = new TrackArrayMsg();
         msg.header.frame_id = frameId;
-        msg.poses = poses.ToArray();
-        return msg;
+        msg.tracks = tracks.ToArray();
+        ros.Publish(topic, msg);
     }
 }

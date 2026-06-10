@@ -56,8 +56,8 @@ Then press **Play** in Unity. The bridge and Unity connect automatically.
 | `/sim/tracks` | `n3_new_msgs/TrackArray` | ROS → Unity | procedural moving traffic (id/type/pose/vel); 10 Hz |
 | `/sim/tracks/markers` | `visualization_msgs/MarkerArray` | ROS → RViz | traffic as colored cubes |
 | `/sim/boat/pose` | `geometry_msgs/PoseStamped` | Unity → | ego boat pose; 10 Hz |
+| `/scene/objects` | `n3_new_msgs/TrackArray` | Unity → | ALL authored scene objects (ego + buoys): id/type/pose/vel; 10 Hz |
 | `/map/costmap_static` | `nav_msgs/OccupancyGrid` | — | the costmap the generator reads (= `/map`, remapped) |
-| `/dynamic_obstacles` | `geometry_msgs/PoseArray` | Unity → | **legacy** Unity-spawned boats; superseded by `/sim/tracks` |
 
 **Coordinate conventions (important):**
 - Control channel (`target_pose`): `position.x` = Unity x, `position.z` = Unity z, `y = 0`.
@@ -292,10 +292,27 @@ The sim exposes the scene to ROS as **two distinct layers**; don't conflate them
 The **static** layer flows Unity → ROS (Unity knows the geometry). The **dynamic** layer flows
 ROS → Unity (the generator invents the traffic; Unity renders it via `TrackSpawner.cs`).
 
-> **The old `DynamicObstaclePublisher` (`/dynamic_obstacles`) is obsolete.** It used to export
-> Unity-spawned boats to ROS, back when Unity owned the moving obstacles. Now traffic
-> *originates* in ROS as `/sim/tracks`, so re-publishing it from Unity would be a pointless
-> round-trip. Disable that component; the dynamic layer is the tracks.
+> **`DynamicObstaclePublisher` was repurposed.** It used to export Unity-spawned moving boats as
+> `/dynamic_obstacles` (a bare `PoseArray`) — obsolete once traffic moved to `/sim/tracks`. It
+> now publishes **ALL authored scene objects** (ego + buoys) as a `TrackArray` on
+> **`/scene/objects`** (id + type + pose + velocity each). So the full scene over ROS is:
+> `/sim/tracks` (procedural traffic) **+** `/scene/objects` (authored objects) = every object.
+
+### Query every object in the scene
+
+```bash
+# the authored objects (ego + buoys): id, type, pose
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 topic echo /scene/objects --once"
+
+# the procedural traffic: id, type, pose, velocity
+docker compose exec ros_bridge bash -lc \
+ "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
+  ros2 topic echo /sim/tracks --once"
+```
+Scene-object ids start at **9000** (logged with their names in Unity, e.g. `id 9000 = agent_01`);
+`type` is the `n3_new_msgs/Track` constant (`1` = sailboat/ego, `11` = buoy).
 
 ### What is a costmap?
 
@@ -389,7 +406,7 @@ Assets/Scripts/            Unity controllers + publishers
   AutonomousBoatController.cs ROS target-following control
   BoatControlSwitcher.cs     manual/auto switch (per boat)
   OccupancyGridPublisher.cs  static /map (costmap source; + Extra Obstacles for the island)
-  DynamicObstaclePublisher.cs legacy /dynamic_obstacles (obsolete — superseded by /sim/tracks)
+  DynamicObstaclePublisher.cs publishes all authored scene objects (ego+buoys) -> /scene/objects (TrackArray)
   TrackSpawner.cs            subscribes /sim/tracks, spawns/moves/despawns traffic by type
   EgoPosePublisher.cs        publishes the ego boat pose to /sim/boat/pose
   DatasetCaptureScheduler.cs Perception dataset capture (ROS/hotkey controlled)

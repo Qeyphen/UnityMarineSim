@@ -97,6 +97,7 @@ public class SceneBuilder : MonoBehaviour
 
     void SpawnObjects()
     {
+        var allObjects = new List<(string name, byte type, Transform tf, bool dynamic)>();
         foreach (ObjectConfig obj in config.objects)
         {
             GameObject prefab = GetPrefab(obj.type);
@@ -142,6 +143,7 @@ public class SceneBuilder : MonoBehaviour
             }
 
             spawnedObjects[obj.id] = spawned;
+            allObjects.Add((obj.id, TypeToTrackType(obj.type), spawned.transform, obj.dynamic));
         }
 
         Debug.Log($"[SceneLoader] Done — {spawnedObjects.Count} objects spawned.");
@@ -150,9 +152,20 @@ public class SceneBuilder : MonoBehaviour
         if (gridPublisher == null) gridPublisher = FindAnyObjectByType<OccupancyGridPublisher>();
         if (gridPublisher != null) gridPublisher.Publish(staticObstacles);
 
-        // Hand the dynamic agents to the dynamic obstacle publisher (if present).
+        // Hand ALL spawned objects (ego + buoys) to the scene-objects publisher (/scene/objects).
         if (dynamicPublisher == null) dynamicPublisher = FindAnyObjectByType<DynamicObstaclePublisher>();
-        if (dynamicPublisher != null) dynamicPublisher.SetAgents(dynamicAgents);
+        if (dynamicPublisher != null) dynamicPublisher.SetObjects(allObjects);
+    }
+
+    // Map a Scene.json object type to an n3_new_msgs/Track type byte (for /scene/objects).
+    static byte TypeToTrackType(string type)
+    {
+        switch (type.ToLower())
+        {
+            case "boat": return RosMessageTypes.N3New.TrackMsg.SAILBOAT;
+            case "buoy": return RosMessageTypes.N3New.TrackMsg.BUOY;
+            default:     return RosMessageTypes.N3New.TrackMsg.UNKNOWN;
+        }
     }
 
     // Seeds the boat's control mode from config. The BoatControlSwitcher then
