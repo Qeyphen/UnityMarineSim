@@ -300,19 +300,27 @@ ROS → Unity (the generator invents the traffic; Unity renders it via `TrackSpa
 
 ### Query every object in the scene
 
-```bash
-# the authored objects (ego + buoys): id, type, pose
-docker compose exec ros_bridge bash -lc \
- "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
-  ros2 topic echo /scene/objects --once"
+The full scene lives on **two** `TrackArray` topics (same message type): `/scene/objects`
+(authored: ego + buoys) and `/sim/tracks` (procedural traffic). **All objects = both topics.**
 
-# the procedural traffic: id, type, pose, velocity
+Dump everything in one command:
+```bash
 docker compose exec ros_bridge bash -lc \
  "source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && \
-  ros2 topic echo /sim/tracks --once"
+  echo '===== AUTHORED (ego + buoys) =====' && ros2 topic echo /scene/objects --once && \
+  echo '===== PROCEDURAL TRAFFIC =====' && ros2 topic echo /sim/tracks --once"
 ```
-Scene-object ids start at **9000** (logged with their names in Unity, e.g. `id 9000 = agent_01`);
-`type` is the `n3_new_msgs/Track` constant (`1` = sailboat/ego, `11` = buoy).
+
+Or each on its own:
+```bash
+ros2 topic echo /scene/objects --once   # authored: ego (id 9000) + buoys (9001…)
+ros2 topic echo /sim/tracks --once        # procedural traffic (ids 1…)
+```
+Each entry has `id`, `type`, `pose`, `twist`. The **id ranges distinguish the source**: ≥ 9000 =
+authored (logged in Unity, e.g. `id 9000 = agent_01`), < 1000 = generated. `type` is the
+`n3_new_msgs/Track` constant (`1` = sailboat/ego, `11` = buoy, …).
+
+In code, a consumer subscribes to **both** topics and merges by `id` for a live, complete scene.
 
 ### What is a costmap?
 
